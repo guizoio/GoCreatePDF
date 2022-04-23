@@ -28,19 +28,19 @@ func Title(pdf *gofpdf.Fpdf) {
 
 func Body(pdf *gofpdf.Fpdf, txt entity.People) {
 
-	bodyInfo(pdf, 2.5, 2.7, "Name", txt.Name)
-	bodyInfo(pdf, 2.5, 3.9, "CPF", txt.CPF)
-	bodyInfo(pdf, 2.5, 5.1, "RG", txt.RG)
-	bodyInfo(pdf, 3.5, 6.3, "Birth Date", txt.BirthDate)
-	bodyInfo(pdf, 2.5, 7.5, "Email", txt.Email)
-	bodyInfo(pdf, 4.0, 8.7, "Code Postal", txt.CodePostal)
-	bodyInfo(pdf, 3.0, 9.9, "Address", txt.Address)
-	bodyInfo(pdf, 3.0, 11.1, "Number", txt.Number)
-	bodyInfo(pdf, 3.0, 12.3, "District", txt.District)
-	bodyInfo(pdf, 2.5, 13.5, "City", txt.City)
-	bodyInfo(pdf, 2.5, 14.7, "State", txt.State)
-	bodyInfo(pdf, 2.5, 15.9, "Cell", txt.Cell)
-	bodyInfo(pdf, 3.5, 17.1, "Telephone", txt.Telephone)
+	bodyInfo(pdf, 4.0, 2.7, "Name", txt.Name)
+	bodyInfo(pdf, 4.0, 4.2, "CPF", txt.CPF)
+	bodyInfo(pdf, 4.0, 5.7, "RG", txt.RG)
+	bodyInfo(pdf, 4.0, 7.2, "Birth Date", txt.BirthDate)
+	bodyInfo(pdf, 4.0, 8.7, "Email", txt.Email)
+	bodyInfo(pdf, 4.0, 10.2, "Code Postal", txt.CodePostal)
+	bodyInfo(pdf, 4.0, 11.7, "Address", txt.Address)
+	bodyInfo(pdf, 4.0, 13.2, "Number", txt.Number)
+	bodyInfo(pdf, 4.0, 14.7, "District", txt.District)
+	bodyInfo(pdf, 4.0, 16.2, "City", txt.City)
+	bodyInfo(pdf, 4.0, 17.7, "State", txt.State)
+	bodyInfo(pdf, 4.0, 19.2, "Cell", txt.Cell)
+	bodyInfo(pdf, 4.0, 20.7, "Telephone", txt.Telephone)
 
 }
 
