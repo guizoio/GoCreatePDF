@@ -1,16 +1,17 @@
 package generator
 
 import (
+	"CreateFilePDF/src/entity"
 	"CreateFilePDF/src/generator/assemble_func"
 )
 
 type CreatePDF struct {
 	FilePDF string
 	FileIMG string
-	Message string
+	Message entity.People
 }
 
-func NewCreatePDF(FilePDF string, FileIMG string, Message string) *CreatePDF {
+func NewCreatePDF(FilePDF string, FileIMG string, Message entity.People) *CreatePDF {
 	return &CreatePDF{FilePDF, FileIMG, Message}
 }
 

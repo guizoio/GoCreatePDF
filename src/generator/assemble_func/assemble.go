@@ -1,6 +1,9 @@
 package assemble_func
 
-import "github.com/jung-kurt/gofpdf"
+import (
+	"CreateFilePDF/src/entity"
+	"github.com/jung-kurt/gofpdf"
+)
 
 func Init() *gofpdf.Fpdf {
 	pdf := gofpdf.New("P", "mm", "A4", "")
@@ -24,8 +27,20 @@ func Title(pdf *gofpdf.Fpdf) {
 	pdf.Ln(0)
 }
 
-func Body(pdf *gofpdf.Fpdf, txt string) {
-	pdf.SetFont("Arial", "B", 16)
+func Body(pdf *gofpdf.Fpdf, txt entity.People) {
+	pdf.SetFont("Arial", "B", 12)
 	pdf.MoveTo(5, 5)
-	pdf.Cell(0, 130, txt)
+	pdf.Cell(0, 120, "Name:")
+
+	pdf.SetFont("Arial", "", 12)
+	pdf.MoveTo(20, 5)
+	pdf.Cell(0, 120, txt.Name)
+
+	pdf.SetFont("Arial", "B", 12)
+	pdf.MoveTo(5, 5)
+	pdf.Cell(0, 135, "Address:")
+
+	pdf.SetFont("Arial", "", 12)
+	pdf.MoveTo(25, 5)
+	pdf.Cell(0, 135, txt.Address)
 }
