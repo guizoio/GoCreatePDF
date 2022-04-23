@@ -28,19 +28,28 @@ func Title(pdf *gofpdf.Fpdf) {
 }
 
 func Body(pdf *gofpdf.Fpdf, txt entity.People) {
+
+	bodyInfo(pdf, 20, 120, "Name", txt.Name)
+	bodyInfo(pdf, 17, 135, "CPF", txt.CPF)
+	bodyInfo(pdf, 15, 150, "RG", txt.RG)
+	bodyInfo(pdf, 28, 165, "Birth Date", txt.BirthDate)
+	bodyInfo(pdf, 20, 180, "Email", txt.Email)
+	bodyInfo(pdf, 33, 195, "Code Postal", txt.CodePostal)
+	bodyInfo(pdf, 26, 210, "Address", txt.Address)
+	bodyInfo(pdf, 24, 225, "Number", txt.Number)
+	bodyInfo(pdf, 23, 240, "District", txt.District)
+	bodyInfo(pdf, 17, 255, "City", txt.City)
+	bodyInfo(pdf, 19, 270, "State", txt.State)
+	bodyInfo(pdf, 17, 285, "Cell", txt.Cell)
+	bodyInfo(pdf, 20, 300, "Telephone", txt.Telephone)
+
+}
+
+func bodyInfo(pdf *gofpdf.Fpdf, x, h float64, title, name string) {
 	pdf.SetFont("Arial", "B", 12)
 	pdf.MoveTo(5, 5)
-	pdf.Cell(0, 120, "Name:")
-
+	pdf.Cell(0, h, title+":")
 	pdf.SetFont("Arial", "", 12)
-	pdf.MoveTo(20, 5)
-	pdf.Cell(0, 120, txt.Name)
-
-	pdf.SetFont("Arial", "B", 12)
-	pdf.MoveTo(5, 5)
-	pdf.Cell(0, 135, "Address:")
-
-	pdf.SetFont("Arial", "", 12)
-	pdf.MoveTo(25, 5)
-	pdf.Cell(0, 135, txt.Address)
+	pdf.MoveTo(x, 5)
+	pdf.Cell(0, h, name)
 }

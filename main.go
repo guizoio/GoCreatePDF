@@ -23,7 +23,7 @@ func mock() generator.CreatePDF {
 		FileIMG: "lim.png",
 		Message: struct {
 			Name       string
-			CPF_CNPJ   string
+			CPF        string
 			RG         string
 			BirthDate  string
 			Email      string
@@ -37,7 +37,7 @@ func mock() generator.CreatePDF {
 			Telephone  string
 		}{
 			Name:       "Isabela Carolina Bernardes",
-			CPF_CNPJ:   "340.836.925-96",
+			CPF:        "340.836.925-96",
 			RG:         "25.366.824-4",
 			BirthDate:  "14/02/2002",
 			Email:      "isabelacarolinabernardes@itatiaia.net",

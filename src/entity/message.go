@@ -2,7 +2,7 @@ package entity
 
 type People struct {
 	Name       string
-	CPF_CNPJ   string
+	CPF        string
 	RG         string
 	BirthDate  string
 	Email      string
