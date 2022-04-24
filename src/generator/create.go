@@ -37,8 +37,9 @@ func (c *CreatePDF) convertPdfPeoble() error {
 }
 
 func (c *CreatePDF) convertPdfCompany() error {
-	pdf := assemble_func.Init()
-	assemble_func.Logo(pdf, c.FileIMG)
-	assemble_func.Title(pdf, "Registration Form Company")
+	pdf := assemble_func.InitCompany()
+	assemble_func.LogoCompany(pdf, c.FileIMG)
+	assemble_func.TitleCompany(pdf)
+	assemble_func.BodyCompany(pdf, c.Company)
 	return pdf.OutputFileAndClose("RegistrationCompany.pdf")
 }
