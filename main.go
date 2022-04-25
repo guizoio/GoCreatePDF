@@ -7,8 +7,11 @@ import (
 	"CreateFilePDF/src/generator"
 	"CreateFilePDF/src/infra"
 	"CreateFilePDF/src/infra/adapters/gorm/repository"
+	"context"
 	"fmt"
 	"github.com/spf13/cobra"
+	"os/signal"
+	"syscall"
 )
 
 func init() {
@@ -16,6 +19,9 @@ func init() {
 }
 
 func main() {
+
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGTERM, syscall.SIGINT, syscall.SIGKILL)
+	defer stop()
 
 	containerDI := infra.NewContainerDI()
 	defer containerDI.ShutDown()
@@ -33,7 +39,7 @@ func main() {
 		Use:   "httpserver",
 		Short: "Run httpserver",
 		Run: func(cli *cobra.Command, args []string) {
-			fmt.Println("httpserver")
+			cmd.StartHttp(ctx, containerDI)
 		},
 	}
 

@@ -2,12 +2,14 @@ package infra
 
 import (
 	"CreateFilePDF/src/configs/database"
+	"CreateFilePDF/src/user_case/create_file"
 	"gorm.io/gorm"
 	"os"
 )
 
 type ContainerDI struct {
-	DB *gorm.DB
+	DB            *gorm.DB
+	CreateHandler create_file.CreateHandler
 }
 
 func NewContainerDI() *ContainerDI {
@@ -23,8 +25,11 @@ func NewContainerDI() *ContainerDI {
 	}
 	container.DB = database.InitGorm(&config)
 
+	container.build()
 	return container
 }
 
-func (c *ContainerDI) build()    {}
+func (c *ContainerDI) build() {
+	c.CreateHandler = create_file.NewCreateHandler()
+}
 func (c *ContainerDI) ShutDown() {}
