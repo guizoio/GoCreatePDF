@@ -3,13 +3,12 @@ package main
 import (
 	"CreateFilePDF/src/cmd"
 	"CreateFilePDF/src/configs"
-	"CreateFilePDF/src/configs/database"
 	"CreateFilePDF/src/entity"
 	"CreateFilePDF/src/generator"
+	"CreateFilePDF/src/infra"
 	"CreateFilePDF/src/infra/adapters/gorm/repository"
 	"fmt"
 	"github.com/spf13/cobra"
-	"os"
 )
 
 func init() {
@@ -17,20 +16,15 @@ func init() {
 }
 
 func main() {
-	config := database.Config{
-		Hostname: os.Getenv("DB_HOST_LOCAL"),
-		Port:     os.Getenv("DB_PORT"),
-		UserName: os.Getenv("DB_USERNAME"),
-		Password: os.Getenv("DB_PASSWORD"),
-		Database: os.Getenv("DB_DATABASE"),
-	}
-	db := database.InitGorm(&config)
+
+	containerDI := infra.NewContainerDI()
+	defer containerDI.ShutDown()
 
 	cmdMakeMigrations := &cobra.Command{
 		Use:   "MakeMigrations",
 		Short: "Run MakeMigrations",
 		Run: func(cli *cobra.Command, args []string) {
-			makeMigration := cmd.NewDatabaseMakeMigrations(db)
+			makeMigration := cmd.NewDatabaseMakeMigrations(containerDI.DB)
 			makeMigration.MakeMigrations()
 		},
 	}
@@ -49,7 +43,7 @@ func main() {
 		Run: func(cli *cobra.Command, args []string) {
 			fmt.Println("init convert pdf")
 
-			repositoryCreate := repository.NewCreateRepository(db)
+			repositoryCreate := repository.NewCreateRepository(containerDI.DB)
 
 			c := generator.NewCreatePDF(
 				mockPeople().FilePDF,
