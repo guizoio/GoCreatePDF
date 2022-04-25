@@ -1,5 +1,13 @@
 package entity
 
+import "gorm.io/datatypes"
+
+type Test struct {
+	ID      string
+	Name    string
+	Content datatypes.JSON
+}
+
 type People struct {
 	Name      string
 	CPF       string

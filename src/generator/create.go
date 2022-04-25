@@ -3,23 +3,28 @@ package generator
 import (
 	"CreateFilePDF/src/entity"
 	"CreateFilePDF/src/generator/assemble_func"
+	"CreateFilePDF/src/infra/adapters/gorm/model"
+	"CreateFilePDF/src/infra/adapters/gorm/repository"
+	"encoding/json"
 	"errors"
+	"github.com/gofrs/uuid"
 )
 
 type CreatePDF struct {
-	FilePDF int64
-	FileIMG string
-	People  entity.People
-	Company entity.Company
+	FilePDF    int64
+	FileIMG    string
+	People     entity.People
+	Company    entity.Company
+	Repository repository.FaceCreateRepository
 }
 
-func NewCreatePDF(FilePDF int64, FileIMG string, Message entity.People, Company entity.Company) *CreatePDF {
-	return &CreatePDF{FilePDF, FileIMG, Message, Company}
+func NewCreatePDF(FilePDF int64, FileIMG string, Message entity.People, Company entity.Company, Repository repository.FaceCreateRepository) *CreatePDF {
+	return &CreatePDF{FilePDF, FileIMG, Message, Company, Repository}
 }
 
 func (c *CreatePDF) CreatePDF() error {
 	if c.FilePDF == 1 {
-		return c.convertPdfPeoble()
+		return c.convertPdfPeople()
 	} else if c.FilePDF == 2 {
 		return c.convertPdfCompany()
 	} else {
@@ -28,11 +33,18 @@ func (c *CreatePDF) CreatePDF() error {
 
 }
 
-func (c *CreatePDF) convertPdfPeoble() error {
+func (c *CreatePDF) convertPdfPeople() error {
 	pdf := assemble_func.Init()
 	assemble_func.Logo(pdf, c.FileIMG)
 	assemble_func.Title(pdf, "Registration Form")
 	assemble_func.Body(pdf, c.People)
+
+	buffer, _ := json.Marshal(c.People)
+	err := c.infoCreateDB(buffer, "PEOPLE")
+	if err != nil {
+		return err
+	}
+
 	return pdf.OutputFileAndClose("Registration.pdf")
 }
 
@@ -41,5 +53,22 @@ func (c *CreatePDF) convertPdfCompany() error {
 	assemble_func.LogoCompany(pdf, c.FileIMG)
 	assemble_func.TitleCompany(pdf)
 	assemble_func.BodyCompany(pdf, c.Company)
+
+	buffer, _ := json.Marshal(c.Company)
+	err := c.infoCreateDB(buffer, "COMPANY")
+	if err != nil {
+		return err
+	}
+
 	return pdf.OutputFileAndClose("RegistrationCompany.pdf")
+}
+
+func (c *CreatePDF) infoCreateDB(buffer []byte, TxtType string) error {
+	textUUID, _ := uuid.NewV4()
+	data := model.Create{
+		ID:      textUUID.String(),
+		Name:    TxtType,
+		Content: buffer,
+	}
+	return c.Repository.Create(data)
 }
