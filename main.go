@@ -52,8 +52,10 @@ func main() {
 			repositoryCreate := repository.NewCreateRepository(containerDI.DB)
 
 			c := generator.NewCreatePDF(
-				mockPeople().FilePDF,
-				mockPeople().FileIMG,
+				entity.HeadlerPDF{
+					FilePDF: 1,
+					FileIMG: "lim.png",
+				},
 				mockPeople().People,
 				mockPeople().Company,
 				repositoryCreate,
@@ -65,8 +67,10 @@ func main() {
 			}
 
 			c = generator.NewCreatePDF(
-				mockCompany().FilePDF,
-				mockCompany().FileIMG,
+				entity.HeadlerPDF{
+					FilePDF: 2,
+					FileIMG: "lim.png",
+				},
 				mockCompany().People,
 				mockCompany().Company,
 				repositoryCreate,
@@ -88,8 +92,6 @@ func main() {
 
 func mockPeople() generator.CreatePDF {
 	return generator.CreatePDF{
-		FilePDF: 1,
-		FileIMG: "lim.png",
 		People: struct {
 			Name      string
 			CPF       string
@@ -171,8 +173,6 @@ func mockPeople() generator.CreatePDF {
 
 func mockCompany() generator.CreatePDF {
 	return generator.CreatePDF{
-		FilePDF: 2,
-		FileIMG: "lim.png",
 		People: struct {
 			Name      string
 			CPF       string

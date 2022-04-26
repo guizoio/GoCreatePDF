@@ -31,7 +31,8 @@ func StartHttp(ctx context.Context, containerDI *infra.ContainerDI) {
 		AllowHeaders: "*",
 	}))
 
-	app.Get("/test", containerDI.CreateHandler.Get)
+	app.Get("/check", containerDI.CreateHandler.Check)
+	app.Post("/create", containerDI.CreateHandler.CreateFilePDF)
 
 	err := app.Listen(":8080")
 	if err != nil {

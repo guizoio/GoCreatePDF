@@ -11,21 +11,20 @@ import (
 )
 
 type CreatePDF struct {
-	FilePDF    int64
-	FileIMG    string
+	HeaderPDF  entity.HeadlerPDF
 	People     entity.People
 	Company    entity.Company
 	Repository repository.FaceCreateRepository
 }
 
-func NewCreatePDF(FilePDF int64, FileIMG string, Message entity.People, Company entity.Company, Repository repository.FaceCreateRepository) *CreatePDF {
-	return &CreatePDF{FilePDF, FileIMG, Message, Company, Repository}
+func NewCreatePDF(HeaderPDF entity.HeadlerPDF, Message entity.People, Company entity.Company, Repository repository.FaceCreateRepository) CreatePDF {
+	return CreatePDF{HeaderPDF, Message, Company, Repository}
 }
 
 func (c *CreatePDF) CreatePDF() error {
-	if c.FilePDF == 1 {
+	if c.HeaderPDF.FilePDF == 1 {
 		return c.convertPdfPeople()
-	} else if c.FilePDF == 2 {
+	} else if c.HeaderPDF.FilePDF == 2 {
 		return c.convertPdfCompany()
 	} else {
 		return errors.New("Error: file code pdf ")
@@ -35,7 +34,7 @@ func (c *CreatePDF) CreatePDF() error {
 
 func (c *CreatePDF) convertPdfPeople() error {
 	pdf := assemble_func.Init()
-	assemble_func.Logo(pdf, c.FileIMG)
+	assemble_func.Logo(pdf, c.HeaderPDF.FileIMG)
 	assemble_func.Title(pdf, "Registration Form")
 	assemble_func.Body(pdf, c.People)
 
@@ -50,7 +49,7 @@ func (c *CreatePDF) convertPdfPeople() error {
 
 func (c *CreatePDF) convertPdfCompany() error {
 	pdf := assemble_func.InitCompany()
-	assemble_func.LogoCompany(pdf, c.FileIMG)
+	assemble_func.LogoCompany(pdf, c.HeaderPDF.FileIMG)
 	assemble_func.TitleCompany(pdf)
 	assemble_func.BodyCompany(pdf, c.Company)
 

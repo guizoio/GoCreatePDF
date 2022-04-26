@@ -8,6 +8,11 @@ type Test struct {
 	Content datatypes.JSON
 }
 
+type HeadlerPDF struct {
+	FilePDF int64
+	FileIMG string
+}
+
 type People struct {
 	Name      string
 	CPF       string
