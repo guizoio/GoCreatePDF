@@ -1,5 +1,18 @@
 package entity
 
+import "gorm.io/datatypes"
+
+type Test struct {
+	ID      string
+	Name    string
+	Content datatypes.JSON
+}
+
+type HeadlerPDF struct {
+	FilePDF int64
+	FileIMG string
+}
+
 type People struct {
 	Name      string
 	CPF       string

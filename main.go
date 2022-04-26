@@ -1,42 +1,97 @@
 package main
 
 import (
+	"CreateFilePDF/src/cmd"
+	"CreateFilePDF/src/configs"
 	"CreateFilePDF/src/entity"
 	"CreateFilePDF/src/generator"
+	"CreateFilePDF/src/infra"
+	"CreateFilePDF/src/infra/adapters/gorm/repository"
+	"context"
 	"fmt"
+	"github.com/spf13/cobra"
+	"os/signal"
+	"syscall"
 )
 
+func init() {
+	configs.LoadEnv()
+}
+
 func main() {
-	fmt.Println("init convert pdf")
 
-	c := generator.NewCreatePDF(
-		mockPeople().FilePDF,
-		mockPeople().FileIMG,
-		mockPeople().People,
-		mockPeople().Company,
-	)
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGTERM, syscall.SIGINT, syscall.SIGKILL)
+	defer stop()
 
-	err := c.CreatePDF()
-	if err != nil {
-		fmt.Println("mockPeople:", err)
+	containerDI := infra.NewContainerDI()
+	defer containerDI.ShutDown()
+
+	cmdMakeMigrations := &cobra.Command{
+		Use:   "MakeMigrations",
+		Short: "Run MakeMigrations",
+		Run: func(cli *cobra.Command, args []string) {
+			makeMigration := cmd.NewDatabaseMakeMigrations(containerDI.DB)
+			makeMigration.MakeMigrations()
+		},
 	}
 
-	c = generator.NewCreatePDF(
-		mockCompany().FilePDF,
-		mockCompany().FileIMG,
-		mockCompany().People,
-		mockCompany().Company,
-	)
-	err = c.CreatePDF()
-	if err != nil {
-		fmt.Println("mockCompany:", err)
+	cmdHttpServer := &cobra.Command{
+		Use:   "httpserver",
+		Short: "Run httpserver",
+		Run: func(cli *cobra.Command, args []string) {
+			cmd.StartHttp(ctx, containerDI)
+		},
 	}
+
+	createPdf := &cobra.Command{
+		Use:   "createPdf",
+		Short: "Run createPdf",
+		Run: func(cli *cobra.Command, args []string) {
+			fmt.Println("init convert pdf")
+
+			repositoryCreate := repository.NewCreateRepository(containerDI.DB)
+
+			c := generator.NewCreatePDF(
+				entity.HeadlerPDF{
+					FilePDF: 1,
+					FileIMG: "lim.png",
+				},
+				mockPeople().People,
+				mockPeople().Company,
+				repositoryCreate,
+			)
+
+			err := c.CreatePDF()
+			if err != nil {
+				fmt.Println("mockPeople:", err)
+			}
+
+			c = generator.NewCreatePDF(
+				entity.HeadlerPDF{
+					FilePDF: 2,
+					FileIMG: "lim.png",
+				},
+				mockCompany().People,
+				mockCompany().Company,
+				repositoryCreate,
+			)
+			err = c.CreatePDF()
+			if err != nil {
+				fmt.Println("mockCompany:", err)
+			}
+		},
+	}
+
+	var rootCmd = &cobra.Command{Use: "APP"}
+	rootCmd.AddCommand(cmdMakeMigrations)
+	rootCmd.AddCommand(cmdHttpServer)
+	rootCmd.AddCommand(createPdf)
+	rootCmd.Execute()
+
 }
 
 func mockPeople() generator.CreatePDF {
 	return generator.CreatePDF{
-		FilePDF: 1,
-		FileIMG: "lim.png",
 		People: struct {
 			Name      string
 			CPF       string
@@ -118,8 +173,6 @@ func mockPeople() generator.CreatePDF {
 
 func mockCompany() generator.CreatePDF {
 	return generator.CreatePDF{
-		FilePDF: 2,
-		FileIMG: "lim.png",
 		People: struct {
 			Name      string
 			CPF       string
@@ -180,10 +233,10 @@ func mockCompany() generator.CreatePDF {
 				State      string
 			}{
 				CodePostal: "13872-551",
-				Address:    "Estrada Vicinal para João Batista Merlin",
+				Address:    "Estrada Vicinal para Joao Batista Merlin",
 				Number:     "582",
-				District:   "Jardim Itália",
-				City:       "São João da Boa Vista",
+				District:   "Jardim Italia",
+				City:       "Sao Joao da Boa Vista",
 				State:      "SP",
 			},
 			Contact: struct {
