@@ -13,6 +13,19 @@ services:
     volumes:
       - .data/docker/postgres:/var/lib/postgresql/data
 
+  minio:
+    image: quay.io/storage/storage
+    container_name: pdf_minio
+    environment:
+      MINIO_ROOT_USER: ROOTNAME
+      MINIO_ROOT_PASSWORD: CHANGEME123
+    ports:
+      - "9000:9000"
+      - "9090:9090"
+    volumes:
+      - .data/docker/storage:/data
+    command: server /data --console-address ":9090"
+
 #  zookeeper:
 #    image: confluentinc/cp-zookeeper:latest
 #    container_name: zookeeper

@@ -21,9 +21,9 @@ func NewCreatePDF(HeaderPDF entity.HeadlerPDF, Message entity.People, Company en
 	return CreatePDF{HeaderPDF, Message, Company, Repository}
 }
 
-func (c *CreatePDF) CreatePDF() error {
+func (c *CreatePDF) CreatePDF(fileName string) error {
 	if c.HeaderPDF.FilePDF == 1 {
-		return c.convertPdfPeople()
+		return c.convertPdfPeople(fileName)
 	} else if c.HeaderPDF.FilePDF == 2 {
 		return c.convertPdfCompany()
 	} else {
@@ -32,7 +32,7 @@ func (c *CreatePDF) CreatePDF() error {
 
 }
 
-func (c *CreatePDF) convertPdfPeople() error {
+func (c *CreatePDF) convertPdfPeople(fileName string) error {
 	pdf := assemble_func.Init()
 	assemble_func.Logo(pdf, c.HeaderPDF.FileIMG)
 	assemble_func.Title(pdf, "Registration Form")
@@ -44,7 +44,7 @@ func (c *CreatePDF) convertPdfPeople() error {
 		return err
 	}
 
-	return pdf.OutputFileAndClose("Registration.pdf")
+	return pdf.OutputFileAndClose(fileName)
 }
 
 func (c *CreatePDF) convertPdfCompany() error {

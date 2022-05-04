@@ -3,16 +3,20 @@ package create_file
 import (
 	"CreateFilePDF/src/entity"
 	"CreateFilePDF/src/generator"
+	"CreateFilePDF/src/user_case/storage_client"
 	"github.com/gofiber/fiber/v2"
 	"os"
+	"strings"
+	"time"
 )
 
 type CreateHandler struct {
-	CreatePDF generator.CreatePDF
+	CreatePDF      generator.CreatePDF
+	ServiceStorage storage_client.FaceServiceStorage
 }
 
-func NewCreateHandler(CreatePDF generator.CreatePDF) CreateHandler {
-	return CreateHandler{CreatePDF}
+func NewCreateHandler(CreatePDF generator.CreatePDF, ServiceStorage storage_client.FaceServiceStorage) CreateHandler {
+	return CreateHandler{CreatePDF, ServiceStorage}
 }
 
 func (ref *CreateHandler) Check(c *fiber.Ctx) error {
@@ -35,9 +39,22 @@ func (ref *CreateHandler) CreateFilePDF(c *fiber.Ctx) error {
 	ref.CreatePDF.People = buff
 	ref.CreatePDF.Company = companyPDF
 
-	ref.CreatePDF.CreatePDF()
+	fileName := rideName(buff.Name)
+	ref.CreatePDF.CreatePDF(fileName)
 
-	//return c.Status(fiber.StatusOK).JSON(buff)
-	defer os.Remove("./Registration.pdf")
-	return c.Download("./Registration.pdf", "Registration.pdf")
+	defer os.Remove("./" + fileName)
+
+	ref.ServiceStorage.UploadFile("pdf", fileName)
+	return c.Status(fiber.StatusOK).JSON(fileName)
+}
+
+func rideName(name string) string {
+	year := time.Now().Format("2006")
+	month := time.Now().Format("01")
+	day := time.Now().Format("02")
+	hour := time.Now().Format("03")
+	minute := time.Now().Format("04")
+	second := time.Now().Format("05")
+	return year + "_" + month + "_" + day + "_" + hour + "_" + minute + "_" + second + "_" +
+		strings.Replace(name, " ", "_", -1) + ".pdf"
 }

@@ -61,7 +61,7 @@ func main() {
 				repositoryCreate,
 			)
 
-			err := c.CreatePDF()
+			err := c.CreatePDF("Registration.pdf")
 			if err != nil {
 				fmt.Println("mockPeople:", err)
 			}
@@ -75,7 +75,7 @@ func main() {
 				mockCompany().Company,
 				repositoryCreate,
 			)
-			err = c.CreatePDF()
+			err = c.CreatePDF("Registration.pdf")
 			if err != nil {
 				fmt.Println("mockCompany:", err)
 			}

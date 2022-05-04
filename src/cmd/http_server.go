@@ -34,6 +34,8 @@ func StartHttp(ctx context.Context, containerDI *infra.ContainerDI) {
 	app.Get("/check", containerDI.CreateHandler.Check)
 	app.Post("/create", containerDI.CreateHandler.CreateFilePDF)
 
+	app.Get("/storage/check", containerDI.StorageClient.Check)
+
 	err := app.Listen(":8080")
 	if err != nil {
 		panic(err)
