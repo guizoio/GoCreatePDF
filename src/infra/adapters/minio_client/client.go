@@ -1,7 +1,9 @@
 package minio_client
 
 import (
+	"CreateFilePDF/src/entity"
 	"context"
+	"fmt"
 	"github.com/minio/minio-go/v7"
 	"os"
 )
@@ -10,6 +12,7 @@ type FaceClientMinio interface {
 	CheckLife() string
 	ListBuckets() ([]minio.BucketInfo, error)
 	UploadObject(bucketName, fileName string) error
+	ListBucketObjects(bucket string) ([]*entity.ObjectIndo, error)
 }
 
 type ClientMinio struct {
@@ -29,10 +32,31 @@ func (c ClientMinio) ListBuckets() ([]minio.BucketInfo, error) {
 	if err != nil {
 		return nil, err
 	}
-	//for _, bucket := range buckets {
-	//	fmt.Println(bucket.Name + " - " + bucket.CreationDate.String())
-	//}
 	return buckets, nil
+}
+
+func (c ClientMinio) ListBucketObjects(bucket string) ([]*entity.ObjectIndo, error) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	objectCh := c.minioClient.ListObjects(ctx, bucket, minio.ListObjectsOptions{
+		Recursive: true,
+	})
+
+	var list []*entity.ObjectIndo
+
+	for object := range objectCh {
+		if object.Err != nil {
+			fmt.Println(object.Err)
+			return nil, object.Err
+		}
+		objects := entity.ObjectIndo{
+			Name: object.Key,
+			Date: object.LastModified,
+			Size: object.Size,
+		}
+		list = append(list, objects.ToDomain())
+	}
+	return list, nil
 }
 
 func (c ClientMinio) UploadObject(bucketName, fileName string) error {

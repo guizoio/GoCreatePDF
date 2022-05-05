@@ -36,6 +36,7 @@ func StartHttp(ctx context.Context, containerDI *infra.ContainerDI) {
 
 	app.Get("/storage/check", containerDI.StorageClient.Check)
 	app.Get("/storage/list/buckets", containerDI.StorageClient.ListBuckets)
+	app.Get("/storage/list/:bucket", containerDI.StorageClient.ListObjects)
 
 	err := app.Listen(":8080")
 	if err != nil {
