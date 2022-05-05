@@ -2,14 +2,13 @@ package minio_client
 
 import (
 	"context"
-	"fmt"
 	"github.com/minio/minio-go/v7"
 	"os"
 )
 
 type FaceClientMinio interface {
 	CheckLife() string
-	ListBuckets() error
+	ListBuckets() ([]minio.BucketInfo, error)
 	UploadObject(bucketName, fileName string) error
 }
 
@@ -25,15 +24,15 @@ func (c ClientMinio) CheckLife() string {
 	return c.minioClient.EndpointURL().String()
 }
 
-func (c ClientMinio) ListBuckets() error {
+func (c ClientMinio) ListBuckets() ([]minio.BucketInfo, error) {
 	buckets, err := c.minioClient.ListBuckets(context.Background())
 	if err != nil {
-		return err
+		return nil, err
 	}
-	for _, bucket := range buckets {
-		fmt.Println(bucket.Name + " - " + bucket.CreationDate.String())
-	}
-	return nil
+	//for _, bucket := range buckets {
+	//	fmt.Println(bucket.Name + " - " + bucket.CreationDate.String())
+	//}
+	return buckets, nil
 }
 
 func (c ClientMinio) UploadObject(bucketName, fileName string) error {

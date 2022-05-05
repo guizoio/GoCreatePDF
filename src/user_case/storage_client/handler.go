@@ -16,6 +16,9 @@ func (ref *StorageClient) Check(c *fiber.Ctx) error {
 }
 
 func (ref *StorageClient) ListBuckets(c *fiber.Ctx) error {
-	ref.Service.ListBuckets()
-	return c.Status(fiber.StatusOK).JSON("")
+	result, err := ref.Service.ListBuckets()
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON("ERROR: " + err.Error())
+	}
+	return c.Status(fiber.StatusOK).JSON(result)
 }
