@@ -11,7 +11,11 @@ func NewStorageClient(Service FaceServiceStorage) StorageClient {
 }
 
 func (ref *StorageClient) Check(c *fiber.Ctx) error {
-	ref.Service.ListBuckets()
 	result := ref.Service.CheckLife()
 	return c.Status(fiber.StatusOK).JSON(result)
+}
+
+func (ref *StorageClient) ListBuckets(c *fiber.Ctx) error {
+	ref.Service.ListBuckets()
+	return c.Status(fiber.StatusOK).JSON("")
 }
