@@ -66,6 +66,6 @@ func (c *ContainerDI) build() {
 	serviceMinio := storage_client.NewServiceStorage(clientMinio)
 	c.StorageClient = storage_client.NewStorageClient(serviceMinio)
 
-	c.CreateHandler = create_file.NewCreateHandler(c.CreatePDF, serviceMinio)
+	c.CreateHandler = create_file.NewCreateHandler(c.CreatePDF, serviceMinio, os.Getenv("BUCKET"))
 }
 func (c *ContainerDI) ShutDown() {}

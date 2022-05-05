@@ -14,7 +14,7 @@ services:
       - .data/docker/postgres:/var/lib/postgresql/data
 
   minio:
-    image: quay.io/storage/storage
+    image: minio/minio
     container_name: pdf_minio
     environment:
       MINIO_ROOT_USER: ROOTNAME

@@ -13,10 +13,11 @@ import (
 type CreateHandler struct {
 	CreatePDF      generator.CreatePDF
 	ServiceStorage storage_client.FaceServiceStorage
+	BucketStorage  string
 }
 
-func NewCreateHandler(CreatePDF generator.CreatePDF, ServiceStorage storage_client.FaceServiceStorage) CreateHandler {
-	return CreateHandler{CreatePDF, ServiceStorage}
+func NewCreateHandler(CreatePDF generator.CreatePDF, ServiceStorage storage_client.FaceServiceStorage, BucketStorage string) CreateHandler {
+	return CreateHandler{CreatePDF, ServiceStorage, BucketStorage}
 }
 
 func (ref *CreateHandler) Check(c *fiber.Ctx) error {
@@ -44,7 +45,7 @@ func (ref *CreateHandler) CreateFilePDF(c *fiber.Ctx) error {
 
 	defer os.Remove("./" + fileName)
 
-	ref.ServiceStorage.UploadFile("pdf", fileName)
+	ref.ServiceStorage.UploadFile(ref.BucketStorage, fileName)
 	return c.Status(fiber.StatusOK).JSON(fileName)
 }
 
