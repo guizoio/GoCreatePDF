@@ -3,14 +3,13 @@ package minio_client
 import (
 	"CreateFilePDF/src/entity"
 	"context"
-	"fmt"
 	"github.com/minio/minio-go/v7"
 	"os"
 )
 
 type FaceClientMinio interface {
 	CheckLife() string
-	ListBuckets() ([]minio.BucketInfo, error)
+	ListBuckets() ([]*entity.BucketInfo, error)
 	UploadObject(bucketName, fileName string) error
 	ListBucketObjects(bucket string) ([]*entity.ObjectIndo, error)
 }
@@ -27,12 +26,20 @@ func (c ClientMinio) CheckLife() string {
 	return c.minioClient.EndpointURL().String()
 }
 
-func (c ClientMinio) ListBuckets() ([]minio.BucketInfo, error) {
+func (c ClientMinio) ListBuckets() ([]*entity.BucketInfo, error) {
 	buckets, err := c.minioClient.ListBuckets(context.Background())
 	if err != nil {
 		return nil, err
 	}
-	return buckets, nil
+	var list []*entity.BucketInfo
+	for _, bucket := range buckets {
+		data := entity.BucketInfo{
+			Name:         bucket.Name,
+			CreationDate: bucket.CreationDate,
+		}
+		list = append(list, data.ToDomain())
+	}
+	return list, nil
 }
 
 func (c ClientMinio) ListBucketObjects(bucket string) ([]*entity.ObjectIndo, error) {
@@ -43,10 +50,8 @@ func (c ClientMinio) ListBucketObjects(bucket string) ([]*entity.ObjectIndo, err
 	})
 
 	var list []*entity.ObjectIndo
-
 	for object := range objectCh {
 		if object.Err != nil {
-			fmt.Println(object.Err)
 			return nil, object.Err
 		}
 		objects := entity.ObjectIndo{
@@ -69,7 +74,15 @@ func (c ClientMinio) UploadObject(bucketName, fileName string) error {
 	if err != nil {
 		return err
 	}
-	_, err = c.minioClient.PutObject(context.Background(), bucketName, fileName, file, fileStat.Size(), minio.PutObjectOptions{ContentType: "application/octet-stream"})
+	_, err = c.minioClient.PutObject(
+		context.Background(),
+		bucketName,
+		fileName,
+		file,
+		fileStat.Size(),
+		minio.PutObjectOptions{ContentType: "application/octet-stream"},
+	)
+
 	if err != nil {
 		return err
 	}

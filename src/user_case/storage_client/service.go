@@ -3,12 +3,11 @@ package storage_client
 import (
 	"CreateFilePDF/src/entity"
 	"CreateFilePDF/src/infra/adapters/minio_client"
-	"github.com/minio/minio-go/v7"
 )
 
 type FaceServiceStorage interface {
 	CheckLife() string
-	ListBuckets() ([]minio.BucketInfo, error)
+	ListBuckets() ([]*entity.BucketInfo, error)
 	ListObjects(bucket string) ([]*entity.ObjectIndo, error)
 	UploadFile(bucketName, fileName string) error
 }
@@ -25,7 +24,7 @@ func (s *ServiceStorage) CheckLife() string {
 	return s.client.CheckLife()
 }
 
-func (s *ServiceStorage) ListBuckets() ([]minio.BucketInfo, error) {
+func (s *ServiceStorage) ListBuckets() ([]*entity.BucketInfo, error) {
 	return s.client.ListBuckets()
 }
 

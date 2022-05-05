@@ -9,6 +9,13 @@ type BucketInfo struct {
 	CreationDate time.Time `json:"creationDate"`
 }
 
+func (ref *BucketInfo) ToDomain() *BucketInfo {
+	return &BucketInfo{
+		Name:         ref.Name,
+		CreationDate: ref.CreationDate,
+	}
+}
+
 type ObjectIndo struct {
 	Name string
 	Date time.Time
