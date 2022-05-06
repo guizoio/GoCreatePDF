@@ -35,7 +35,12 @@ make env
 make migrations
 ```
 
-## `Fourth step` run the HTTP server.
+## `Fourth step` opens the HTML to generate the PDF file.
+```sh
+make html
+```
+
+## `Fifth step` run the HTTP server.
 ```sh
 make server
 ```

@@ -10,6 +10,9 @@ env:
 migrations:
 	go run main.go MakeMigrations
 
+html:
+	google-chrome stuff/html/index.html
+
 server:
 	go run main.go httpserver
 
