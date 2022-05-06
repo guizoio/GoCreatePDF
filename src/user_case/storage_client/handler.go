@@ -2,6 +2,7 @@ package storage_client
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"os"
 )
 
 type StorageClient struct {
@@ -32,4 +33,15 @@ func (ref *StorageClient) ListObjects(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON("ERROR: " + err.Error())
 	}
 	return c.Status(fiber.StatusOK).JSON(result)
+}
+
+func (ref *StorageClient) Download(c *fiber.Ctx) error {
+	bucket := c.Params("bucket")
+	object := c.Params("object")
+	defer os.Remove("./" + object)
+	err := ref.Service.DownloadFile(bucket, object)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON("ERROR: " + err.Error())
+	}
+	return c.Download("./"+object, object)
 }

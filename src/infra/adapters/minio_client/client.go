@@ -3,7 +3,9 @@ package minio_client
 import (
 	"CreateFilePDF/src/entity"
 	"context"
+	"fmt"
 	"github.com/minio/minio-go/v7"
+	"io"
 	"os"
 )
 
@@ -12,6 +14,7 @@ type FaceClientMinio interface {
 	ListBuckets() ([]*entity.BucketInfo, error)
 	UploadObject(bucketName, fileName string) error
 	ListBucketObjects(bucket string) ([]*entity.ObjectIndo, error)
+	DownloadObject(bucket, fileName string) error
 }
 
 type ClientMinio struct {
@@ -84,6 +87,23 @@ func (c ClientMinio) UploadObject(bucketName, fileName string) error {
 	)
 
 	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c ClientMinio) DownloadObject(bucket, fileName string) error {
+	fmt.Println(bucket)
+	fmt.Println(fileName)
+	object, err := c.minioClient.GetObject(context.Background(), bucket, fileName, minio.GetObjectOptions{})
+	if err != nil {
+		return err
+	}
+	localFile, err := os.Create("./" + fileName)
+	if err != nil {
+		return err
+	}
+	if _, err = io.Copy(localFile, object); err != nil {
 		return err
 	}
 	return nil

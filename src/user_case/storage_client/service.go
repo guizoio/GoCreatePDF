@@ -10,6 +10,7 @@ type FaceServiceStorage interface {
 	ListBuckets() ([]*entity.BucketInfo, error)
 	ListObjects(bucket string) ([]*entity.ObjectIndo, error)
 	UploadFile(bucketName, fileName string) error
+	DownloadFile(bucketName, fileName string) error
 }
 
 type ServiceStorage struct {
@@ -38,6 +39,14 @@ func (s *ServiceStorage) ListObjects(bucket string) ([]*entity.ObjectIndo, error
 
 func (s *ServiceStorage) UploadFile(bucketName, fileName string) error {
 	err := s.client.UploadObject(bucketName, fileName)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *ServiceStorage) DownloadFile(bucketName, fileName string) error {
+	err := s.client.DownloadObject(bucketName, fileName)
 	if err != nil {
 		return err
 	}
