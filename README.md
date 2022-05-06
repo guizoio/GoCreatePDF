@@ -22,7 +22,7 @@ Project create file PDF in GO
 make up
 ```
 to stop docker-compose run the command:`make down`.
-> ### Soon after we will configure the local storage, [wiki](https://github.com/guizoio/GoCreatePDF/wiki) to help.
+> ### Soon after we will configure the local storage, [wiki](https://github.com/guizoio/GoCreatePDF/wiki/Storage-Minio) to help.
 
 
 ## `Second step` create .env file.
