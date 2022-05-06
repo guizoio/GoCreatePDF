@@ -1,0 +1,12 @@
+.painel{
+    padding: 30px;
+    border: ridge;
+}
+
+.titulo_pessoal{
+    margin-top: -19px;
+    position: absolute;
+    margin-left: 17px;
+    background: white;
+    padding: 10px;
+}
