@@ -10,7 +10,7 @@ Project create file PDF in GO
 * Save PDF file information to database
 <!--te-->
 
-# :wrench: Tecnologias utilizadas
+# :wrench: Technologies used
 * Goland
 * Postgres
 * Minio
