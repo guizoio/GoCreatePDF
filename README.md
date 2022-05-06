@@ -39,3 +39,6 @@ make migrations
 ```sh
 make server
 ```
+
+# :technologist: Endpoint
+> ### list of endpoint, [wiki](https://github.com/guizoio/GoCreatePDF/wiki/Endpoint).
