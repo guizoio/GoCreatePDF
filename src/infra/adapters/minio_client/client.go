@@ -3,7 +3,6 @@ package minio_client
 import (
 	"CreateFilePDF/src/entity"
 	"context"
-	"fmt"
 	"github.com/minio/minio-go/v7"
 	"io"
 	"os"
@@ -93,8 +92,6 @@ func (c ClientMinio) UploadObject(bucketName, fileName string) error {
 }
 
 func (c ClientMinio) DownloadObject(bucket, fileName string) error {
-	fmt.Println(bucket)
-	fmt.Println(fileName)
 	object, err := c.minioClient.GetObject(context.Background(), bucket, fileName, minio.GetObjectOptions{})
 	if err != nil {
 		return err
