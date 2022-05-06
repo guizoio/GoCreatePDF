@@ -12,7 +12,7 @@ type FaceClientMinio interface {
 	CheckLife() string
 	ListBuckets() ([]*entity.BucketInfo, error)
 	UploadObject(bucketName, fileName string) error
-	ListBucketObjects(bucket string) ([]*entity.ObjectIndo, error)
+	ListBucketObjects(bucket string) ([]*entity.ObjectInfo, error)
 	DownloadObject(bucket, fileName string) error
 }
 
@@ -44,19 +44,19 @@ func (c ClientMinio) ListBuckets() ([]*entity.BucketInfo, error) {
 	return list, nil
 }
 
-func (c ClientMinio) ListBucketObjects(bucket string) ([]*entity.ObjectIndo, error) {
+func (c ClientMinio) ListBucketObjects(bucket string) ([]*entity.ObjectInfo, error) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	objectCh := c.minioClient.ListObjects(ctx, bucket, minio.ListObjectsOptions{
 		Recursive: true,
 	})
 
-	var list []*entity.ObjectIndo
+	var list []*entity.ObjectInfo
 	for object := range objectCh {
 		if object.Err != nil {
 			return nil, object.Err
 		}
-		objects := entity.ObjectIndo{
+		objects := entity.ObjectInfo{
 			Name: object.Key,
 			Date: object.LastModified,
 			Size: object.Size,

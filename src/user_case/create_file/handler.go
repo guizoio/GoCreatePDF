@@ -53,7 +53,7 @@ func rideName(name string) string {
 	year := time.Now().Format("2006")
 	month := time.Now().Format("01")
 	day := time.Now().Format("02")
-	hour := time.Now().Format("03")
+	hour := time.Now().Format("15")
 	minute := time.Now().Format("04")
 	second := time.Now().Format("05")
 	return year + "_" + month + "_" + day + "_" + hour + "_" + minute + "_" + second + "_" +

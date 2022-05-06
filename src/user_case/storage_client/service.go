@@ -8,7 +8,7 @@ import (
 type FaceServiceStorage interface {
 	CheckLife() string
 	ListBuckets() ([]*entity.BucketInfo, error)
-	ListObjects(bucket string) ([]*entity.ObjectIndo, error)
+	ListObjects(bucket string) ([]*entity.ObjectInfo, error)
 	UploadFile(bucketName, fileName string) error
 	DownloadFile(bucketName, fileName string) error
 }
@@ -29,7 +29,7 @@ func (s *ServiceStorage) ListBuckets() ([]*entity.BucketInfo, error) {
 	return s.client.ListBuckets()
 }
 
-func (s *ServiceStorage) ListObjects(bucket string) ([]*entity.ObjectIndo, error) {
+func (s *ServiceStorage) ListObjects(bucket string) ([]*entity.ObjectInfo, error) {
 	result, err := s.client.ListBucketObjects(bucket)
 	if err != nil {
 		return nil, err

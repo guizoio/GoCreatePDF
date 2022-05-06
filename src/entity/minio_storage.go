@@ -16,14 +16,14 @@ func (ref *BucketInfo) ToDomain() *BucketInfo {
 	}
 }
 
-type ObjectIndo struct {
+type ObjectInfo struct {
 	Name string
 	Date time.Time
 	Size int64
 }
 
-func (ref *ObjectIndo) ToDomain() *ObjectIndo {
-	return &ObjectIndo{
+func (ref *ObjectInfo) ToDomain() *ObjectInfo {
+	return &ObjectInfo{
 		Name: ref.Name,
 		Date: ref.Date,
 		Size: ref.Size,
