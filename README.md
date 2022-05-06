@@ -4,39 +4,38 @@ Project create file PDF in GO
 <!--ts-->
 * Main objective study
 * Create PDF file
+  * Endpoint to create PDF file
   * Endpoint to download PDF file
+  * Save file in storage local [Minion](https://min.io/)
 * Save PDF file information to database
 <!--te-->
 
 ## :wrench: Tecnologias utilizadas
 * Goland
 * Postgres
+* Minio
 * Docker-Compose
 
 ## :rocket: Running the project
-### `First step` create .env file.
-```sh
-make env
-```
-
-### `Second step` run docker-compose.
+### `First step` run docker-compose.
 ```sh
 make up
 ```
 to stop docker-compose run the command:`make down`.
+## > Soon after we will configure the local storage, [wiki](https://github.com/guizoio/GoCreatePDF/wiki) to help.
+
+
+### `Second step` create .env file.
+```sh
+make env
+```
 
 ### `Third step` run the command to create the database tables.
 ```sh
 make migrations
 ```
 
-### `Fourth step` to create test PDF file.
-```sh
-make run
-```
-PDF file is generated in project root with fake data.
-
-### `Fifth step` run the HTTP server.
+### `Fourth step` run the HTTP server.
 ```sh
 make server
 ```

@@ -10,9 +10,6 @@ env:
 migrations:
 	go run main.go MakeMigrations
 
-run:
-	go run main.go createPdf
-
 server:
 	go run main.go httpserver
 
