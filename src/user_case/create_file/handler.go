@@ -4,6 +4,7 @@ import (
 	"CreateFilePDF/src/entity"
 	"CreateFilePDF/src/generator"
 	"CreateFilePDF/src/user_case/storage_client"
+	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"os"
 	"strings"
@@ -41,11 +42,19 @@ func (ref *CreateHandler) CreateFilePDF(c *fiber.Ctx) error {
 	ref.CreatePDF.Company = companyPDF
 
 	fileName := rideName(buff.Name)
-	ref.CreatePDF.CreatePDF(fileName)
-
 	defer os.Remove("./" + fileName)
 
-	ref.ServiceStorage.UploadFile(ref.BucketStorage, fileName)
+	errCreate := ref.CreatePDF.CreatePDF(fileName)
+	if errCreate != nil {
+		fmt.Println(errCreate)
+		return c.Status(fiber.StatusBadRequest).JSON(map[string]interface{}{"FileName": fileName, "Error CreatePDF": errCreate.Error()})
+	}
+
+	errUpload := ref.ServiceStorage.UploadFile(ref.BucketStorage, fileName)
+	if errUpload != nil {
+		return c.Status(fiber.StatusBadGateway).JSON(map[string]interface{}{"FileName": fileName, "Error UploadFile": errUpload.Error()})
+	}
+
 	return c.Status(fiber.StatusOK).JSON(fileName)
 }
 

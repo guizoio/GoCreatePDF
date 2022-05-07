@@ -5,20 +5,28 @@ import (
 	"CreateFilePDF/src/generator/assemble_func"
 	"CreateFilePDF/src/infra/adapters/gorm/model"
 	"CreateFilePDF/src/infra/adapters/gorm/repository"
+	"context"
 	"encoding/json"
 	"errors"
 	"github.com/gofrs/uuid"
+	"os"
+	"time"
 )
 
-type CreatePDF struct {
-	HeaderPDF  entity.HeadlerPDF
-	People     entity.People
-	Company    entity.Company
-	Repository repository.FaceCreateRepository
+type PublishMessage interface {
+	PublishMessage(ctx context.Context, id string, message interface{}, topic string, headers map[string]string) error
 }
 
-func NewCreatePDF(HeaderPDF entity.HeadlerPDF, Message entity.People, Company entity.Company, Repository repository.FaceCreateRepository) CreatePDF {
-	return CreatePDF{HeaderPDF, Message, Company, Repository}
+type CreatePDF struct {
+	HeaderPDF     entity.HeadlerPDF
+	People        entity.People
+	Company       entity.Company
+	Repository    repository.FaceCreateRepository
+	messageBroker PublishMessage
+}
+
+func NewCreatePDF(HeaderPDF entity.HeadlerPDF, Message entity.People, Company entity.Company, Repository repository.FaceCreateRepository, messageBroker PublishMessage) CreatePDF {
+	return CreatePDF{HeaderPDF, Message, Company, Repository, messageBroker}
 }
 
 func (c *CreatePDF) CreatePDF(fileName string) error {
@@ -69,5 +77,34 @@ func (c *CreatePDF) infoCreateDB(buffer []byte, TxtType string) error {
 		Name:    TxtType,
 		Content: buffer,
 	}
+	var pe *entity.People
+	json.Unmarshal(buffer, &pe)
+
+	aa := entity.PublishMessageKafkaPeople{
+		ID:   textUUID.String(),
+		Date: time.Now(),
+		People: entity.People{
+			Name:      pe.Name,
+			CPF:       pe.CPF,
+			RG:        pe.RG,
+			BirthDate: pe.BirthDate,
+			Address: entity.Address{
+				CodePostal: pe.Address.CodePostal,
+				Address:    pe.Address.Address,
+				Number:     pe.Address.Number,
+				District:   pe.Address.District,
+				City:       pe.Address.City,
+				State:      pe.Address.State,
+			},
+			Contact: entity.Contact{
+				Email:     pe.Contact.Email,
+				Cell:      pe.Contact.Cell,
+				Telephone: pe.Contact.Telephone,
+			},
+		},
+	}
+
+	go c.messageBroker.PublishMessage(context.TODO(), os.Getenv("KAFKA_GROUP"), aa, os.Getenv("KAFKA_TOPIC"), nil)
+
 	return c.Repository.Create(data)
 }

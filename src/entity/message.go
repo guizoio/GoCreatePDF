@@ -1,6 +1,9 @@
 package entity
 
-import "gorm.io/datatypes"
+import (
+	"gorm.io/datatypes"
+	"time"
+)
 
 type Test struct {
 	ID      string
@@ -11,6 +14,12 @@ type Test struct {
 type HeadlerPDF struct {
 	FilePDF int64
 	FileIMG string
+}
+
+type PublishMessageKafkaPeople struct {
+	ID     string
+	Date   time.Time
+	People People
 }
 
 type People struct {
