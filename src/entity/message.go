@@ -11,15 +11,16 @@ type Test struct {
 	Content datatypes.JSON
 }
 
-type HeadlerPDF struct {
+type HeaderPDF struct {
 	FilePDF int64
 	FileIMG string
 }
 
 type PublishMessageKafkaPeople struct {
-	ID     string
-	Date   time.Time
-	People People
+	ID       string
+	Date     time.Time
+	FIleName string
+	People   People
 }
 
 type People struct {

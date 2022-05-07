@@ -31,7 +31,7 @@ func (ref *CreateHandler) CreateFilePDF(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON("ERROR: " + result.Error())
 	}
 	buff := request.ToDomain()
-	var headerPDF entity.HeadlerPDF
+	var headerPDF entity.HeaderPDF
 	var companyPDF entity.Company
 
 	headerPDF.FilePDF = request.FilePDF
