@@ -7,6 +7,7 @@ import (
 
 type FaceCreateRepository interface {
 	Create(data model.Create) error
+	UpdateStatus(data model.Create) error
 }
 
 type CreateRepository struct {
@@ -19,6 +20,14 @@ func NewCreateRepository(database *gorm.DB) *CreateRepository {
 
 func (c CreateRepository) Create(data model.Create) error {
 	err := c.database.Create(data)
+	if err != nil {
+		return err.Error
+	}
+	return nil
+}
+
+func (c CreateRepository) UpdateStatus(data model.Create) error {
+	err := c.database.Model(data).Where("id = ?", data.ID).Update("status", "complete")
 	if err != nil {
 		return err.Error
 	}

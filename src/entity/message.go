@@ -2,7 +2,6 @@ package entity
 
 import (
 	"gorm.io/datatypes"
-	"time"
 )
 
 type Test struct {
@@ -14,13 +13,6 @@ type Test struct {
 type HeaderPDF struct {
 	FilePDF int64
 	FileIMG string
-}
-
-type PublishMessageKafkaPeople struct {
-	ID       string
-	Date     time.Time
-	FIleName string
-	People   People
 }
 
 type People struct {

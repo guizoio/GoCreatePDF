@@ -8,6 +8,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/gofrs/uuid"
 	"os"
 	"time"
@@ -77,6 +78,7 @@ func (c *CreatePDF) infoCreateDB(buffer []byte, TxtType, fileName string) error 
 		Name:     TxtType,
 		Content:  buffer,
 		FileName: fileName,
+		Status:   "incomplete",
 	}
 	var people *entity.People
 	json.Unmarshal(buffer, &people)
@@ -106,7 +108,15 @@ func (c *CreatePDF) infoCreateDB(buffer []byte, TxtType, fileName string) error 
 		},
 	}
 
-	go c.messageBroker.PublishMessage(context.TODO(), os.Getenv("KAFKA_GROUP"), messageKafka, os.Getenv("KAFKA_TOPIC"), nil)
+	err := c.Repository.Create(data)
+	if err != nil {
+		return err
+	}
 
-	return c.Repository.Create(data)
+	err = c.messageBroker.PublishMessage(context.TODO(), os.Getenv("KAFKA_GROUP"), messageKafka, os.Getenv("KAFKA_TOPIC"), nil)
+	if err == nil {
+		return c.Repository.UpdateStatus(data)
+	}
+	fmt.Println(err)
+	return nil
 }
