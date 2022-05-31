@@ -10,4 +10,4 @@ COPY lim.png /app/lim.png
 
 RUN go mod download
 # RUN go build -o build ./src/main.go
-ENTRYPOINT go run main.go htgit atpserver
+ENTRYPOINT go run main.go httpserver
