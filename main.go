@@ -35,6 +35,8 @@ func main() {
 		Use:   "httpserver",
 		Short: "Run httpserver",
 		Run: func(cli *cobra.Command, args []string) {
+			makeMigration := cmd.NewDatabaseMakeMigrations(containerDI.DB)
+			go makeMigration.MakeMigrations()
 			cmd.StartHttp(ctx, containerDI)
 		},
 	}

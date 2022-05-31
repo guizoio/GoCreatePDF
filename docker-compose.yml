@@ -8,20 +8,28 @@ services:
       POSTGRES_PASSWORD: root
       POSTGRES_DB: FilePDF
     ports:
-      - "5432:5432"
+      - "9432:5432"
     restart: unless-stopped
     volumes:
       - .data/docker/postgres:/var/lib/postgresql/data
 
-  minio:
-    image: minio/minio
-    container_name: pdf_minio
-    environment:
-      MINIO_ROOT_USER: ROOTNAME
-      MINIO_ROOT_PASSWORD: CHANGEME123
+#  minio:
+#    image: minio/minio
+#    container_name: pdf_minio
+#    environment:
+#      MINIO_ROOT_USER: ROOTNAME
+#      MINIO_ROOT_PASSWORD: CHANGEME123
+#    ports:
+#      - "9000:9000"
+#      - "9090:9090"
+#    volumes:
+#      - .data/docker/storage:/data
+#    command: server /data --console-address ":9090"
+
+  api:
+    build: .
+    container_name: api-FilePDF
+    depends_on:
+      - postgres
     ports:
-      - "9000:9000"
-      - "9090:9090"
-    volumes:
-      - .data/docker/storage:/data
-    command: server /data --console-address ":9090"
+      - 9632:8080
