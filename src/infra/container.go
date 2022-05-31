@@ -5,6 +5,7 @@ import (
 	"CreateFilePDF/src/configs/storage"
 	"CreateFilePDF/src/generator"
 	"CreateFilePDF/src/infra/adapters/gorm/repository"
+	kafkaService "CreateFilePDF/src/infra/adapters/kafka"
 	"CreateFilePDF/src/infra/adapters/minio_client"
 	"CreateFilePDF/src/user_case/create_file"
 	"CreateFilePDF/src/user_case/storage_client"
@@ -21,6 +22,7 @@ type ContainerDI struct {
 	Storage        *minio.Client
 	StorageConnect minio_client.ClientMinio
 	StorageClient  storage_client.StorageClient
+	PublishMessage generator.PublishMessage
 }
 
 func NewContainerDI() *ContainerDI {
@@ -48,6 +50,9 @@ func NewContainerDI() *ContainerDI {
 	}
 	container.Storage = storage.InitStorage(&configMinio)
 
+	configKafka := kafkaService.NewKafkaWriter(os.Getenv("KAFKA_SERVER"), false)
+	container.PublishMessage = kafkaService.NewKafkaClient(configKafka)
+
 	container.build()
 	return container
 }
@@ -60,6 +65,7 @@ func (c *ContainerDI) build() {
 		c.CreatePDF.People,
 		c.CreatePDF.Company,
 		repositoryCreate,
+		c.PublishMessage,
 	)
 
 	clientMinio := minio_client.NewClientMinio(c.Storage)

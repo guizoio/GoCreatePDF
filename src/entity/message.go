@@ -1,6 +1,8 @@
 package entity
 
-import "gorm.io/datatypes"
+import (
+	"gorm.io/datatypes"
+)
 
 type Test struct {
 	ID      string
@@ -8,7 +10,7 @@ type Test struct {
 	Content datatypes.JSON
 }
 
-type HeadlerPDF struct {
+type HeaderPDF struct {
 	FilePDF int64
 	FileIMG string
 }

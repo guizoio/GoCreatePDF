@@ -53,7 +53,11 @@ pdf.metodos = {
             }),
         };
         $.ajax(settings).done(function (response) {
+            console.log(response)
             pdf.metodos.download(response);
+        }).fail(function (jqXHR, textStatus){
+            console.log(jqXHR.responseJSON)
+            console.log(textStatus)
         });
     },
 
